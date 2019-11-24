@@ -1,0 +1,23 @@
+﻿@model SportCenter.ViewModels.GroupTraining.DaySelectModel
+
+@{
+    ViewData["Title"] = "Групповая тренировка";
+    var daysOfWeek = ViewData["NDays"] as List<(int Number, string Day)>;
+}
+
+@using (Html.BeginForm(actionName: "SelectTrainer", controllerName: "GroupTraining"))
+{
+    <div>
+        <h4>Групповая тренировка</h4>
+        <hr />
+        <select class="custom-select" name="selectDay">
+            @foreach (var day in daysOfWeek)
+            {
+                <option value="@day.Number">@day.Day</option>
+            }
+           
+        </select>
+    </div>
+    <input type="submit" value="Выбор тренера" />
+}
+
