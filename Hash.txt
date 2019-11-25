@@ -1,0 +1,8 @@
+public static string HashPass(string pass)
+        {
+            using(var sha1 = new SHA1Managed())
+            {
+                var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(pass));
+                return Encoding.UTF8.GetString(hash);
+            }
+        }

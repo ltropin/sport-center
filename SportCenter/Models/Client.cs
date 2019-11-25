@@ -28,10 +28,13 @@ namespace SportCenter.Models
         [InverseProperty("IdClientNavigation")]
         public virtual ICollection<OrderGroup> OrderGroup { get; set; }
 
-        public static string HashPass(string password)
+        public static string HashPass(string pass)
         {
-            var hash = new SHA1Managed().ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Encoding.UTF8.GetString(hash);
+            using (var sha1 = new SHA1Managed())
+            {
+                var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(pass));
+                return Encoding.UTF8.GetString(hash);
+            }
         }
     }
 }

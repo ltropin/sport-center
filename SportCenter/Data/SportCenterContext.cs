@@ -7,9 +7,9 @@ namespace SportCenter.Data
 {
     public partial class SportCenterContext : DbContext
     {
-        //public SportCenterContext()
-        //{
-        //}
+        public SportCenterContext()
+        {
+        }
 
         public SportCenterContext(DbContextOptions<SportCenterContext> options)
             : base(options)
@@ -20,6 +20,7 @@ namespace SportCenter.Data
         public virtual DbSet<GroupTrain> GroupTrain { get; set; }
         public virtual DbSet<OrderGroup> OrderGroup { get; set; }
         public virtual DbSet<Trainer> Trainer { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

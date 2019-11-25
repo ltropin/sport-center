@@ -15,12 +15,13 @@ namespace SportCenter.Models
         [Key]
         [Column("ID")]
         public int Id { get; set; }
-        [Column("ID_Trainer")]
-        public int IdTrainer { get; set; }
         [Required]
         public string Name { get; set; }
         public int Capacity { get; set; }
+        public TimeSpan Time { get; set; }
         public int DayOfWeek { get; set; }
+        [Column("ID_Trainer")]
+        public int IdTrainer { get; set; }
 
         [ForeignKey(nameof(IdTrainer))]
         [InverseProperty(nameof(Trainer.GroupTrain))]
