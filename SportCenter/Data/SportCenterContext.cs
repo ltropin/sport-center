@@ -7,9 +7,9 @@ namespace SportCenter.Data
 {
     public partial class SportCenterContext : DbContext
     {
-        public SportCenterContext()
-        {
-        }
+        //public SportCenterContext()
+        //{
+        //}
 
         public SportCenterContext(DbContextOptions<SportCenterContext> options)
             : base(options)
@@ -19,8 +19,8 @@ namespace SportCenter.Data
         public virtual DbSet<Client> Client { get; set; }
         public virtual DbSet<GroupTrain> GroupTrain { get; set; }
         public virtual DbSet<OrderGroup> OrderGroup { get; set; }
+        public virtual DbSet<PersonalTrain> PersonalTrain { get; set; }
         public virtual DbSet<Trainer> Trainer { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -43,6 +43,19 @@ namespace SportCenter.Data
                     .WithMany(p => p.OrderGroup)
                     .HasForeignKey(d => d.IdGroupTrain)
                     .HasConstraintName("FK_OrderGroup_GroupTrain_ID");
+            });
+
+            modelBuilder.Entity<PersonalTrain>(entity =>
+            {
+                entity.HasOne(d => d.IdClientNavigation)
+                    .WithMany(p => p.PersonalTrain)
+                    .HasForeignKey(d => d.IdClient)
+                    .HasConstraintName("FK_PersonalTrain_Client_ID");
+
+                entity.HasOne(d => d.IdTrainerNavigation)
+                    .WithMany(p => p.PersonalTrain)
+                    .HasForeignKey(d => d.IdTrainer)
+                    .HasConstraintName("FK_PersonalTrain_Trainer_ID");
             });
 
             OnModelCreatingPartial(modelBuilder);

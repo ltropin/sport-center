@@ -50,13 +50,22 @@
                                 </p>
 
                             </div>
-                            <div class="card-footer">
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="AddGT_@gt.ID" name="gtSelected" value="@gt.ID" />
-                                    @*@Html.CheckBox($"AddGT_{gt.ID}", false, htmlAttributes: new { @class = "custom-control-input" })*@
-                                    @Html.Label($"AddGT_{gt.ID}", "Записаться", htmlAttributes: new { @class = "custom-control-label" })
+                            @if (!gt.Recorded)
+                            {
+                                <div class="card-footer">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="AddGT_@gt.ID" name="gtSelected" value="@gt.ID" />
+                                        @Html.Label($"AddGT_{gt.ID}", "Записаться", htmlAttributes: new { @class = "custom-control-label" })
+                                    </div>
                                 </div>
+                            }
+                            else
+                            {
+                            <div class="card-footer">
+                                Вы уже записаны
+                                @Html.ActionLink("Отменить", "Cancel", new { IDGt = gt.ID })
                             </div>
+                            }
                         </div>
                     </div>
                 }

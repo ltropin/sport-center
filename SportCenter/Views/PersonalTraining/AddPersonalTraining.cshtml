@@ -1,0 +1,42 @@
+﻿@model SportCenter.Models.PersonalTrain
+
+@{
+    ViewData["Title"] = "Персональные тренировки";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var trainers = ViewData["Trainers"] as IEnumerable<SelectListItem>;
+    var dayofweeks = ViewData["DayOfWeeks"] as IEnumerable<SelectListItem>;
+    var timeranges = ViewData["TimeRanges"] as IEnumerable<SelectListItem>;
+}
+
+<h1>Персональные тренировки</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @using(Html.BeginForm(actionName: "AddPersonalTraining", controllerName: "PersonalTraining"))
+        { 
+            <div class="form-group">
+                @Html.Label("DayOfWeek", "Выбор дня недели", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("DayOfWeek", dayofweeks, htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("IdTrainer", "Выбор тренера", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("IdTrainer", trainers, htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Time", "Выбор времени", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("Time", timeranges, htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Записаться" class="btn btn-primary" />
+            </div>
+        }
+    </div>
+</div>
+

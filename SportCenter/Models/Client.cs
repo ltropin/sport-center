@@ -12,6 +12,7 @@ namespace SportCenter.Models
         public Client()
         {
             OrderGroup = new HashSet<OrderGroup>();
+            PersonalTrain = new HashSet<PersonalTrain>();
         }
 
         [Key]
@@ -22,11 +23,14 @@ namespace SportCenter.Models
         public string Fio { get; set; }
         [Required]
         public string Email { get; set; }
+
         [Required]
         public string Password { get; set; }
 
         [InverseProperty("IdClientNavigation")]
         public virtual ICollection<OrderGroup> OrderGroup { get; set; }
+        [InverseProperty("IdClientNavigation")]
+        public virtual ICollection<PersonalTrain> PersonalTrain { get; set; }
 
         public static string HashPass(string pass)
         {

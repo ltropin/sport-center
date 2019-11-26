@@ -13,5 +13,6 @@ namespace SportCenter.ViewModels
         public string Time { get; set; }
         public string DayOfWeek { get; set; }
         public string TrainerName { get; set; }
+        public bool Recorded { get; set; }
     }
 }

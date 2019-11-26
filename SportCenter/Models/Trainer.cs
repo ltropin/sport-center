@@ -10,6 +10,7 @@ namespace SportCenter.Models
         public Trainer()
         {
             GroupTrain = new HashSet<GroupTrain>();
+            PersonalTrain = new HashSet<PersonalTrain>();
         }
 
         [Key]
@@ -21,5 +22,7 @@ namespace SportCenter.Models
 
         [InverseProperty("IdTrainerNavigation")]
         public virtual ICollection<GroupTrain> GroupTrain { get; set; }
+        [InverseProperty("IdTrainerNavigation")]
+        public virtual ICollection<PersonalTrain> PersonalTrain { get; set; }
     }
 }
