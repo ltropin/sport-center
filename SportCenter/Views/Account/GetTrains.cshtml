@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Мои тренировки";
+    List<SportCenter.ViewModels.GroupTrainingModel> groupTrains = ViewData["GroupTrains"] as List<SportCenter.ViewModels.GroupTrainingModel>;
+    List<PersonalTrain> personalTrains = ViewData["PersonalTrains"] as List<PersonalTrain>;
+}
+
+
+<h1>Групповые тренировки</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Trainer Name</th>
+            <th>Capacity</th>
+            <th>DayOfWeek</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var group in groupTrains)
+        {
+        <tr>
+            <th>@group.Name</th>
+            <td>@group.TrainerName</td>
+            <td>@group.Capacity</td>
+            <td>@group.DayOfWeek</td>
+            <td>@group.Time</td>
+        </tr>
+        }
+
+    </tbody>
+</table>
+
+<h1>Персональные тренировки</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Trainer Name</th>
+            <th>DayOfWeek</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pgroup in personalTrains)
+        {
+            <tr>
+                <td>@pgroup.Tr</td>
+                <td>@group.Capacity</td>
+                <td>@group.DayOfWeek</td>
+                <td>@group.Time</td>
+            </tr>
+        }
+
+    </tbody>
+</table>

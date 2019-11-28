@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SportCenter.Data;
@@ -47,6 +48,7 @@ namespace SportCenter.Controllers
                                              Value = ((int)x).ToString()
                                          });
         }
+        [Authorize]
         [HttpGet]
         public IActionResult AddPersonalTraining()
         {
@@ -56,7 +58,7 @@ namespace SportCenter.Controllers
                                                .Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString() });
             return View();
         }
-
+        [Authorize]
         [HttpPost]
         public IActionResult AddPersonalTraining(PersonalTrain personalTrain)
         {

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SportCenter.Data;
@@ -18,6 +19,17 @@ namespace SportCenter.Controllers
     public class AccountController : Controller
     {
         private readonly SportCenterContext context;
+        private readonly Dictionary<int, (string Short, string Long)> DayOfWeekMap = new Dictionary<int, (string Short, string Long)>
+        {
+            [0] = (Short: "Пн", Long: "Понедельник"),
+            [1] = (Short: "Вт", Long: "Вторник"),
+            [2] = (Short: "Ср", Long: "Среда"),
+            [3] = (Short: "Чт", Long: "Четверг"),
+            [4] = (Short: "Пт", Long: "Пятница"),
+            [5] = (Short: "Сб", Long: "Суббота"),
+            [6] = (Short: "Вс", Long: "Восскресенье"),
+        };
+
         public AccountController(SportCenterContext context)
         {
             this.context = context;
@@ -89,13 +101,41 @@ namespace SportCenter.Controllers
             // установка аутентификационных куки
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
-
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
         }
+        [Authorize]
+        [HttpGet]
+        public IActionResult GetTrains()
+        {
+            var clientID = context.Client.Single(x => x.Email == User.Identity.Name).Id;
+            var groupTrains = context.OrderGroup
+                                     .Include(x => x.IdGroupTrainNavigation)
+                                     .Where(group => group.IdClient == clientID)
+                                     .Select(group => group.IdGroupTrainNavigation)
+                                     .Select(x => new GroupTrainingModel
+                                     {
+                                         Name = x.Name,
+                                         TrainerName = x.IdTrainerNavigation.Fio,
+                                         Capacity =  x.Capacity,
+                                         DayOfWeek = DayOfWeekMap[x.DayOfWeek].Long,
+                                         Recorded = true,
+                                         Time = x.Time.ToString()
+                                     })
+                                     .ToList();
+            var personalTrains = context.PersonalTrain
+                                        .Include(x => x.IdTrainerNavigation)
+                                        .Where(x => x.IdClient == clientID)
+                                        .ToList();
 
-        
+            ViewData["GroupTrains"] = groupTrains;
+            ViewData["PersonalTrains"] = personalTrains;
+
+            return View();
+                                        
+        }
     }
 }
