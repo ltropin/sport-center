@@ -1,8 +1,16 @@
 public static string HashPass(string pass)
+{
+    using (SHA1Managed sha1 = new SHA1Managed())
+    {
+        var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(pass));
+        var sb = new StringBuilder(hash.Length * 2);
+
+        foreach (byte b in hash)
         {
-            using(var sha1 = new SHA1Managed())
-            {
-                var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(pass));
-                return Encoding.UTF8.GetString(hash);
-            }
+            // lowercase
+            sb.Append(b.ToString("x2"));
         }
+
+        return sb.ToString();
+    }
+}

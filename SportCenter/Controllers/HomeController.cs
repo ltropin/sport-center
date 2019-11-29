@@ -4,27 +4,36 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SportCenter.AppStart;
+using SportCenter.Data;
 using SportCenter.Models;
+using static SportCenter.Extensions.Extensions;
 
 namespace SportCenter.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly SportCenterContext context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(SportCenterContext context)
         {
-            _logger = logger;
+            this.context = context;
+            if (context.Client.Count() == 0 || context.GroupTrain.Count() == 0)
+                StartData.SetupData(ref context);
         }
 
         public IActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
             {
-                return View();
+                var clientRole = context.Client.Include(x => x.IdRoleNavigation).Single(x => x.Email == User.Identity.Name).IdRoleNavigation;
+                var role = FromRoleElement(clientRole);
+
+                return View(role);
             }
-            return RedirectToAction("NoAccess", "Home");
+            return View();
         }
 
 

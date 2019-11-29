@@ -1,4 +1,5 @@
-﻿
+﻿@using static SportCenter.Extensions.Extensions;
+@model Roles
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,6 +34,18 @@
                         }
                         else
                         {
+                            @if (Model == Roles.Manager)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Manager" asp-action="RequestsManage">Управление абонементами</a>
+                                </li>
+                            }
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Abonement" asp-action="RequestAbonement">Запрос на абонемент</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Abonement" asp-action="AbonementInfo">Абонемент</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="GroupTraining" asp-action="FilterPage">Групповые тренировки</a>
                             </li>

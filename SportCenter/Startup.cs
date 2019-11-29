@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SportCenter.AppStart;
 using SportCenter.Data;
 
 namespace SportCenter
@@ -37,6 +38,7 @@ namespace SportCenter
             services.AddMvc();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

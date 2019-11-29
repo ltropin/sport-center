@@ -10,8 +10,8 @@ using SportCenter.Data;
 namespace SportCenter.Migrations
 {
     [DbContext(typeof(SportCenterContext))]
-    [Migration("20191126202043_CreateDb")]
-    partial class CreateDb
+    [Migration("20191129203137_CreateDatabase")]
+    partial class CreateDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,43 @@ namespace SportCenter.Migrations
                 .HasAnnotation("ProductVersion", "3.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("SportCenter.Models.Abonement", b =>
+                {
+                    b.Property<long>("Number")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DateBlock")
+                        .HasColumnType("date");
+
+                    b.Property<int>("IdClient")
+                        .HasColumnName("ID_Client")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IntervalBlock")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Term")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("Time")
+                        .HasColumnType("time");
+
+                    b.HasKey("Number")
+                        .HasName("PK_Abonement_ID");
+
+                    b.HasIndex("IdClient");
+
+                    b.ToTable("Abonement");
+                });
 
             modelBuilder.Entity("SportCenter.Models.Client", b =>
                 {
@@ -38,11 +75,19 @@ namespace SportCenter.Migrations
                         .HasColumnName("FIO")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("IdRole")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("ID_Role")
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("((1))");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdRole");
 
                     b.ToTable("Client");
                 });
@@ -138,6 +183,48 @@ namespace SportCenter.Migrations
                     b.ToTable("PersonalTrain");
                 });
 
+            modelBuilder.Entity("SportCenter.Models.RequestAbonement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("IdClient")
+                        .HasColumnName("ID_Client")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Term")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("Time")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdClient");
+
+                    b.ToTable("RequestAbonement");
+                });
+
+            modelBuilder.Entity("SportCenter.Models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Role");
+                });
+
             modelBuilder.Entity("SportCenter.Models.Trainer", b =>
                 {
                     b.Property<int>("Id")
@@ -154,6 +241,26 @@ namespace SportCenter.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Trainer");
+                });
+
+            modelBuilder.Entity("SportCenter.Models.Abonement", b =>
+                {
+                    b.HasOne("SportCenter.Models.Client", "IdClientNavigation")
+                        .WithMany("Abonement")
+                        .HasForeignKey("IdClient")
+                        .HasConstraintName("FK_Abonement_Client_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SportCenter.Models.Client", b =>
+                {
+                    b.HasOne("SportCenter.Models.Role", "IdRoleNavigation")
+                        .WithMany("Client")
+                        .HasForeignKey("IdRole")
+                        .HasConstraintName("FK_Client_Role_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SportCenter.Models.GroupTrain", b =>
@@ -196,6 +303,16 @@ namespace SportCenter.Migrations
                         .WithMany("PersonalTrain")
                         .HasForeignKey("IdTrainer")
                         .HasConstraintName("FK_PersonalTrain_Trainer_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SportCenter.Models.RequestAbonement", b =>
+                {
+                    b.HasOne("SportCenter.Models.Client", "IdClientNavigation")
+                        .WithMany("RequestAbonement")
+                        .HasForeignKey("IdClient")
+                        .HasConstraintName("FK_RequestAbonement_Client_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

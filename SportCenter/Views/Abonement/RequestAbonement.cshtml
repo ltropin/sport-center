@@ -1,0 +1,62 @@
+﻿@using SportCenter.Models;
+
+@{
+    ViewData["Title"] = "Создание заявки на абонемент";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var termList = ViewData["TermList"] as IEnumerable<SelectListItem>;
+    var timeList = ViewData["TimeList"] as IEnumerable<SelectListItem>;
+    var myRequests = ViewData["MyRequests"] as IEnumerable<RequestAbonement>;
+}
+
+<h1>Мои заявки</h1>
+@if (myRequests.Count() > 0)
+{
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Term (месяцы)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var request in myRequests)
+        {
+            <tr>
+                <th>@request.Time.ToString(@"hh\:mm")</th>
+                <th>@request.Term</th>
+    
+    @*            <td><a asp-action="DeleteGroup" asp-route-id="@group.ID">Отписаться</a></td>*@
+            </tr>
+        }
+
+    </tbody>
+</table>
+}
+else
+{
+    <b>Нет заявок</b>
+}
+
+<h1>Создание заявки на абонемент</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="RequestAbonement">
+            <div class="form-group">
+                @Html.Label("Term", "Выбор срока", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("Term", termList, htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("Time", "Выбор времени", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("Time", timeList, htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Создать" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

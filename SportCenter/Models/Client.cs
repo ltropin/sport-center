@@ -11,8 +11,10 @@ namespace SportCenter.Models
     {
         public Client()
         {
+            Abonement = new HashSet<Abonement>();
             OrderGroup = new HashSet<OrderGroup>();
             PersonalTrain = new HashSet<PersonalTrain>();
+            RequestAbonement = new HashSet<RequestAbonement>();
         }
 
         [Key]
@@ -23,21 +25,37 @@ namespace SportCenter.Models
         public string Fio { get; set; }
         [Required]
         public string Email { get; set; }
-
         [Required]
         public string Password { get; set; }
+        [Column("ID_Role")]
+        public int IdRole { get; set; }
 
+        [ForeignKey(nameof(IdRole))]
+        [InverseProperty(nameof(Role.Client))]
+        public virtual Role IdRoleNavigation { get; set; }
+        [InverseProperty("IdClientNavigation")]
+        public virtual ICollection<Abonement> Abonement { get; set; }
         [InverseProperty("IdClientNavigation")]
         public virtual ICollection<OrderGroup> OrderGroup { get; set; }
         [InverseProperty("IdClientNavigation")]
         public virtual ICollection<PersonalTrain> PersonalTrain { get; set; }
+        [InverseProperty("IdClientNavigation")]
+        public virtual ICollection<RequestAbonement> RequestAbonement { get; set; }
 
         public static string HashPass(string pass)
         {
-            using (var sha1 = new SHA1Managed())
+            using (SHA1Managed sha1 = new SHA1Managed())
             {
                 var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(pass));
-                return Encoding.UTF8.GetString(hash);
+                var sb = new StringBuilder(hash.Length * 2);
+
+                foreach (byte b in hash)
+                {
+                    // lowercase
+                    sb.Append(b.ToString("x2"));
+                }
+
+                return sb.ToString();
             }
         }
     }

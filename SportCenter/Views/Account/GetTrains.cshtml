@@ -1,7 +1,8 @@
-﻿@{
+﻿@using SportCenter.ViewModels;
+@{
     ViewData["Title"] = "Мои тренировки";
-    List<SportCenter.ViewModels.GroupTrainingModel> groupTrains = ViewData["GroupTrains"] as List<SportCenter.ViewModels.GroupTrainingModel>;
-    List<PersonalTrain> personalTrains = ViewData["PersonalTrains"] as List<PersonalTrain>;
+    var groupTrains = ViewData["GroupTrains"] as List<GroupTrainingModel>;
+    var personalTrains = ViewData["PersonalTrains"] as List<PersonalTrainingModel>;
 }
 
 
@@ -15,6 +16,7 @@
             <th>Capacity</th>
             <th>DayOfWeek</th>
             <th>Time</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -26,6 +28,7 @@
             <td>@group.Capacity</td>
             <td>@group.DayOfWeek</td>
             <td>@group.Time</td>
+            <td><a asp-action="DeleteGroup" asp-route-id="@group.ID">Отписаться</a></td>
         </tr>
         }
 
@@ -33,24 +36,24 @@
 </table>
 
 <h1>Персональные тренировки</h1>
-
 <table class="table table-striped">
     <thead>
         <tr>
             <th>Trainer Name</th>
             <th>DayOfWeek</th>
             <th>Time</th>
+            <th>Отписаться</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var pgroup in personalTrains)
         {
-            <tr>
-                <td>@pgroup.Tr</td>
-                <td>@group.Capacity</td>
-                <td>@group.DayOfWeek</td>
-                <td>@group.Time</td>
-            </tr>
+        <tr>
+            <td>@pgroup.TrainerName</td>
+            <td>@pgroup.DayOfWeek</td>
+            <td>@pgroup.Time</td>
+            <td><a asp-action="DeletePersonal" asp-route-id="@pgroup.ID">Убрать</a></td>
+        </tr>
         }
 
     </tbody>

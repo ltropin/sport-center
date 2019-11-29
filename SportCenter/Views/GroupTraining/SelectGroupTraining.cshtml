@@ -1,7 +1,7 @@
 ﻿@using SportCenter.ViewModels
-@model IEnumerable<IEnumerable<GroupTrainingModel>>
 @{
     ViewData["Title"] = "Групповые тренировки";
+    var groupTrainings = ViewData["GroupTrainings"] as IEnumerable<IEnumerable<GroupTrainingModel>>;
     var trainers = ViewData["Trainers"] as IEnumerable<SelectListItem>;
     var dayofweeks = ViewData["DayOfWeeks"] as IEnumerable<SelectListItem>;
 }
@@ -33,7 +33,7 @@
                       htmlAttributes: new { @class = "p-3" }))
 {
     <div class="container">
-        @foreach (var group in Model)
+        @foreach (var group in groupTrainings)
         {
             <div class="row">
                 @foreach (var gt in group)

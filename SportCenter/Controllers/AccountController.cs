@@ -13,22 +13,13 @@ using Microsoft.EntityFrameworkCore;
 using SportCenter.Data;
 using SportCenter.Models;
 using SportCenter.ViewModels;
+using static SportCenter.Extensions.Extensions;
 
 namespace SportCenter.Controllers
 {
     public class AccountController : Controller
     {
         private readonly SportCenterContext context;
-        private readonly Dictionary<int, (string Short, string Long)> DayOfWeekMap = new Dictionary<int, (string Short, string Long)>
-        {
-            [0] = (Short: "Пн", Long: "Понедельник"),
-            [1] = (Short: "Вт", Long: "Вторник"),
-            [2] = (Short: "Ср", Long: "Среда"),
-            [3] = (Short: "Чт", Long: "Четверг"),
-            [4] = (Short: "Пт", Long: "Пятница"),
-            [5] = (Short: "Сб", Long: "Суббота"),
-            [6] = (Short: "Вс", Long: "Восскресенье"),
-        };
 
         public AccountController(SportCenterContext context)
         {
@@ -75,9 +66,10 @@ namespace SportCenter.Controllers
                 if (user == null)
                 {
                     // добавляем пользователя в бд
-
+                    var allRoles = context.Role.ToList();
                     context.Client.Add(new Client { Email = model.Email,
                                                     Password = Client.HashPass(model.Password),
+                                                    IdRole = FromRoleEnum(Roles.Client, allRoles).Id,
                                                     Fio = model.FIO });
                     await context.SaveChangesAsync();
 
@@ -116,26 +108,62 @@ namespace SportCenter.Controllers
                                      .Include(x => x.IdGroupTrainNavigation)
                                      .Where(group => group.IdClient == clientID)
                                      .Select(group => group.IdGroupTrainNavigation)
+                                     .AsNoTracking()
                                      .Select(x => new GroupTrainingModel
                                      {
+                                         ID = x.Id,
                                          Name = x.Name,
                                          TrainerName = x.IdTrainerNavigation.Fio,
-                                         Capacity =  x.Capacity,
+                                         Capacity = x.Capacity,
                                          DayOfWeek = DayOfWeekMap[x.DayOfWeek].Long,
                                          Recorded = true,
-                                         Time = x.Time.ToString()
+                                         Time = x.Time.ToString(@"hh\:mm")
                                      })
                                      .ToList();
             var personalTrains = context.PersonalTrain
                                         .Include(x => x.IdTrainerNavigation)
                                         .Where(x => x.IdClient == clientID)
+                                        .AsNoTracking()
+                                        .Select(x => new PersonalTrainingModel
+                                        {
+                                            ID = x.Id,
+                                            TrainerName = x.IdTrainerNavigation.Fio,
+                                            DayOfWeek = DayOfWeekMap[x.DayOfWeek].Long,
+                                            Time = x.Time.ToString(@"hh\:mm")
+                                        })
                                         .ToList();
 
             ViewData["GroupTrains"] = groupTrains;
             ViewData["PersonalTrains"] = personalTrains;
 
-            return View();
+            return View(Roles.Client);
                                         
+        }
+        [Authorize]
+        [HttpGet]
+        public IActionResult DeleteGroup(GroupTrainingModel groupTraining)
+        {
+            var clientID = context.Client.Single(x => x.Email == User.Identity.Name).Id;
+            var deleteItem = context.OrderGroup.Single(x => x.IdGroupTrain == groupTraining.ID && x.IdClient == clientID);
+
+            context.OrderGroup.Attach(deleteItem);
+            context.OrderGroup.Remove(deleteItem);
+
+            context.SaveChanges();
+
+            return RedirectToAction(nameof(GetTrains));
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult DeletePersonal(PersonalTrainingModel personalTraining)
+        {
+            var deleteItem = context.PersonalTrain.Single(x => x.Id == personalTraining.ID);
+            context.PersonalTrain.Attach(deleteItem);
+            context.PersonalTrain.Remove(deleteItem);
+
+            context.SaveChanges();
+            return RedirectToAction(nameof(GetTrains));
         }
     }
 }

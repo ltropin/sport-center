@@ -1,0 +1,45 @@
+﻿@using SportCenter.Models;
+@{
+    ViewData["Title"] = "Управление абонементами";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var requests = ViewData["RequestAbonements"] as IEnumerable<RequestAbonement>;
+}
+
+    <h1>Управление абонементами</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ФИО Клиента
+            </th>
+            <th>
+                Срок
+            </th>
+            <th>
+                Время
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in requests)
+    {
+        <tr>
+            <td>
+                @item.IdClientNavigation.Fio
+            </td>
+            <td>
+                @item.Term месяца
+            </td>
+            <td>
+                @item.Time.ToString(@"hh\:mm")
+            </td>
+            <td>
+                <a class="btn btn-primary" asp-action="AcceptAbonement" asp-route-id="@item.Id">Одобрить</a> 
+                @*<a class="btn btn-danger" asp-action="DeclineAbonement" asp-route-id="@item.Id">Отклонить</a>*@
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
