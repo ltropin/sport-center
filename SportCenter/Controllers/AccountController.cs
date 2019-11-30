@@ -105,25 +105,26 @@ namespace SportCenter.Controllers
         {
             var clientID = context.Client.Single(x => x.Email == User.Identity.Name).Id;
             var groupTrains = context.OrderGroup
-                                     .Include(x => x.IdGroupTrainNavigation)
-                                     .Where(group => group.IdClient == clientID)
-                                     .Select(group => group.IdGroupTrainNavigation)
-                                     .AsNoTracking()
-                                     .Select(x => new GroupTrainingModel
-                                     {
-                                         ID = x.Id,
-                                         Name = x.Name,
-                                         TrainerName = x.IdTrainerNavigation.Fio,
-                                         Capacity = x.Capacity,
-                                         DayOfWeek = DayOfWeekMap[x.DayOfWeek].Long,
-                                         Recorded = true,
-                                         Time = x.Time.ToString(@"hh\:mm")
-                                     })
-                                     .ToList();
-            var personalTrains = context.PersonalTrain
-                                        .Include(x => x.IdTrainerNavigation)
+                                        .Include(x => x.IdGroupTrainNavigation)
+                                        .ThenInclude(x => x.IdTrainerNavigation)
                                         .Where(x => x.IdClient == clientID)
-                                        .AsNoTracking()
+                                        .Select(group => group.IdGroupTrainNavigation)
+                                        .ToList()
+                                        .Select(x => new GroupTrainingModel
+                                        {
+                                            ID = x.Id,
+                                            Name = x.Name,
+                                            TrainerName = x.IdTrainerNavigation.Fio,
+                                            Capacity = x.Capacity,
+                                            DayOfWeek = DayOfWeekMap[x.DayOfWeek].Long,
+                                            Recorded = true,
+                                            Time = x.Time.ToString(@"hh\:mm")
+                                        })
+                                        .ToList();
+            var personalTrains = context.PersonalTrain
+                                        .Where(x => x.IdClient == clientID)
+                                        .Include(x => x.IdTrainerNavigation)
+                                        .ToList()
                                         .Select(x => new PersonalTrainingModel
                                         {
                                             ID = x.Id,
