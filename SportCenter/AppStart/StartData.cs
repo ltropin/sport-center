@@ -20,9 +20,9 @@ namespace SportCenter.AppStart
         public static void SetupData(ref SportCenterContext context)
         {
             // Независмые данные
-            AddClients(ref context);
-            AddTrainers(ref context);
             AddRoles(ref context);
+            AddTrainers(ref context);
+            AddClients(ref context);
             // Зависмые данные
             AddGroupTrains(ref context);
             AddOrderGroup(ref context);
