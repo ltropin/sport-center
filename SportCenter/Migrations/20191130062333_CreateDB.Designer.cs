@@ -10,8 +10,8 @@ using SportCenter.Data;
 namespace SportCenter.Migrations
 {
     [DbContext(typeof(SportCenterContext))]
-    [Migration("20191129203137_CreateDatabase")]
-    partial class CreateDatabase
+    [Migration("20191130062333_CreateDB")]
+    partial class CreateDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
