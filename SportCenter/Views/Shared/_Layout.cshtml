@@ -6,60 +6,70 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SportCenter</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/mdb.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/style.css" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SportCenter</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+
+        <nav class="justify-content-center navbar navbar-expand-lg navbar-dark primary-color ">
+            <div class="container ">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SportCenter<span class="sr-only">(current)</span></a>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav"
+                        aria-controls="nav" aria-expanded="false">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-				
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
-                        </li>
-                        @if (!User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
-                            </li>
-                        }
-                        else
+                <div class="collapse navbar-collapse" id="nav">
+                    <ul class="navbar-nav">
+                        @if (User.Identity.IsAuthenticated)
                         {
                             @if (Model == Roles.Manager)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-controller="Manager" asp-action="RequestsManage">Управление абонементами</a>
+                                    <a class="nav-link white-text" asp-controller="Manager" asp-action="RequestsManage">Управление абонементами</a>
                                 </li>
                             }
+                            <!-- Выпадающее меню для абонемента -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="abonement" data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false"><i class="far fa-id-badge"></i>Абонемент</a>
+                                <div class="dropdown-menu dropdown-primary" aria-labelledby="abonement">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Abonement" asp-action="AbonementInfo">Управление абонементом</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Abonement" asp-action="RequestAbonement">Запрос на абонемент</a>
+                                </div>
+                            </li>
+                            <!-- Выпадающее меню для тренировок -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="training" data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false"><i class="fas fa-dumbbell"></i>Тренировки</a>
+                                <div class="dropdown-menu dropdown-primary" aria-labelledby="training">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="GetTrains">Мои записи</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="PersonalTraining" asp-action="AddPersonalTraining">Персональные тренировки</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="GroupTraining" asp-action="FilterPage">Групповые тренировки</a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ml-auto nav-flex-icons">
+                        @if (User.Identity.IsAuthenticated)
+                        {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Abonement" asp-action="RequestAbonement">Запрос на абонемент</a>
+                                <a class="nav-link white-text" asp-area="" asp-controller="Account" asp-action="GetTrains">@User.Identity.Name</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Abonement" asp-action="AbonementInfo">Абонемент</a>
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout">Выход</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Авторизация</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="GroupTraining" asp-action="FilterPage">Групповые тренировки</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="PersonalTraining" asp-action="AddPersonalTraining">Персональные тренировки</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="GetTrains">Мои тренировки</a>
-                            </li>
-
-                            <li class="nav-item">@User.Identity.Name</li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Регистрация</a>
                             </li>
                         }
                     </ul>
@@ -73,13 +83,16 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2019 - SportCenter - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="page-footer font-small mdb-color primary-color">
+        <div class="footer-copyright text-center py-3">
+            &copy; 2019 - SportCenter</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/forms.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/mdb.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>

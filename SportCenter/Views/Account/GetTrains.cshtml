@@ -5,56 +5,63 @@
     var personalTrains = ViewData["PersonalTrains"] as List<PersonalTrainingModel>;
 }
 
+<div class="jumbotron jumbotron-fluid mt-3 pt-2 pb-0">
+    <div class="container px-0">
+        <h2 class="display-4 text-center text-default">Групповые тренировки</h2>
+        <table class="table table-striped px-0 mb-0">
+            <thead>
+                <tr>
+                    <th>Направление</th>
+                    <th>Тренер</th>
+                    <th class="text-center">Кол-во мест</th>
+                    <th>День недели</th>
+                    <th class="text-center">Время проведения</th>
+                    <th class="text-center"><i class="far fa-2x fa-trash-alt"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var group in groupTrains)
+                {
+                    <tr>
+                        <th>@group.Name</th>
+                        <td>@group.TrainerName</td>
+                        <td class="text-center">@group.Capacity</td>
+                        <td>@group.DayOfWeek</td>
+                        <td class="text-center">@group.Time</td>
+                        <td class="text-center"><a class="btn btn-sm btn-danger text-white" asp-action="DeleteGroup" asp-route-id="@group.ID">Отменить запись</a></td>
+                    </tr>
+                }
 
-<h1>Групповые тренировки</h1>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Trainer Name</th>
-            <th>Capacity</th>
-            <th>DayOfWeek</th>
-            <th>Time</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var group in groupTrains)
-        {
-        <tr>
-            <th>@group.Name</th>
-            <td>@group.TrainerName</td>
-            <td>@group.Capacity</td>
-            <td>@group.DayOfWeek</td>
-            <td>@group.Time</td>
-            <td><a asp-action="DeleteGroup" asp-route-id="@group.ID">Отписаться</a></td>
-        </tr>
-        }
+<div class="jumbotron jumbotron-fluid mt-2 pt-2 pb-0">
+    <div class="container px-0">
+        <h2 class="display-4 text-center text-default">Персональные тренировки</h2>
+        <table class="table table-striped px-0 mb-0">
+            <thead>
+                <tr>
+                    <th>Тренер</th>
+                    <th>День недели</th>
+                    <th>Время проведения</th>
+                    <th class="text-center"><i class="far fa-2x fa-trash-alt"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pgroup in personalTrains)
+                {
+                    <tr>
+                        <td>@pgroup.TrainerName</td>
+                        <td>@pgroup.DayOfWeek</td>
+                        <td>@pgroup.Time</td>
+                        <td class="text-center"><a class="btn btn-sm btn-danger text-white" asp-action="DeletePersonal" asp-route-id="@pgroup.ID">Отменить запись</a></td>
+                    </tr>
+                }
 
-    </tbody>
-</table>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<h1>Персональные тренировки</h1>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Trainer Name</th>
-            <th>DayOfWeek</th>
-            <th>Time</th>
-            <th>Отписаться</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var pgroup in personalTrains)
-        {
-        <tr>
-            <td>@pgroup.TrainerName</td>
-            <td>@pgroup.DayOfWeek</td>
-            <td>@pgroup.Time</td>
-            <td><a asp-action="DeletePersonal" asp-route-id="@pgroup.ID">Убрать</a></td>
-        </tr>
-        }
-
-    </tbody>
-</table>
