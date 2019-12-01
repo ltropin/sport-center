@@ -34,21 +34,21 @@ namespace SportCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginModel model)
+        public IActionResult Login(LoginModel model)
         {
             if (ModelState.IsValid)
             {
                 var hashPass = Client.HashPass(model.Password);
-                var user = await context.Client.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == hashPass);
+                var user = context.Client.SingleOrDefault(u => u.Email == model.Email && u.Password == hashPass);
                 if (user != null)
                 {
-                    await Authenticate(model.Email); // аутентификация
+                    Authenticate(model.Email); // аутентификация
 
                     return RedirectToAction("Index", "Home");
                 }
                 ModelState.AddModelError("", "Некорректные email и(или) пароль");
             }
-            return View(model);
+            return RedirectToAction(nameof(Login), new { error = "Некорректные email и(или) пароль" });
         }
 
         [HttpGet]
@@ -67,13 +67,16 @@ namespace SportCenter.Controllers
                 {
                     // добавляем пользователя в бд
                     var allRoles = context.Role.ToList();
-                    context.Client.Add(new Client { Email = model.Email,
-                                                    Password = Client.HashPass(model.Password),
-                                                    IdRole = FromRoleEnum(Roles.Client, allRoles).Id,
-                                                    Fio = model.FIO });
-                    await context.SaveChangesAsync();
+                    context.Client.Add(new Client
+                    {
+                        Email = model.Email,
+                        Password = Client.HashPass(model.Password),
+                        IdRole = FromRoleEnum(Roles.Client, allRoles).Id,
+                        Fio = model.FIO
+                    });
+                    context.SaveChangesAsync();
 
-                    await Authenticate(model.Email); // аутентификация
+                    Authenticate(model.Email); // аутентификация
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -83,7 +86,7 @@ namespace SportCenter.Controllers
             return View(model);
         }
 
-        private async Task Authenticate(string userName)
+        private void Authenticate(string userName)
         {
             var claims = new List<Claim>
             {
@@ -91,7 +94,7 @@ namespace SportCenter.Controllers
             };
             var id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             // установка аутентификационных куки
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
         [Authorize]
         public async Task<IActionResult> Logout()

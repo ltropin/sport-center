@@ -54,8 +54,8 @@
     }
 
 })(jQuery);
-
 $(document).ready(function () {
+    $('.mdb-select').materialSelect();
     $('#password').togglePassword();
     $('#password2').togglePassword();
 })

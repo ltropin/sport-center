@@ -9,70 +9,77 @@
 @using (Html.BeginForm(actionName: "SelectGroupTraining", controllerName: "GroupTraining"))
 {
     @Html.AntiForgeryToken()
-    <div class="form-horizontal">
-        <h4>Групповые тренировки </h4>
-        <hr />
-        <div class="form-group">
-            @Html.Label("STrainer", "Выбор тренера", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("STrainer", trainers, htmlAttributes: new { @class = "form-control" })
+    <h2 class="text-center text-default mt-2">Групповые тренировки</h2>
+    <div class="card mt-2">
+        <div class="card-body row justify-content-center pb-1">
+            <div class="col-lg-4 col-md-12 col-sm-12">
+                @Html.Label("STrainer", "Выбор тренера", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
+                @Html.DropDownList("STrainer", trainers, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0" })
             </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("SDayOfWeek", "Выбор дня недели", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("SDayOfWeek", dayofweeks, htmlAttributes: new { @class = "form-control" })
+            <div class="col-lg-4 col-md-12 col-sm-12">
+                @Html.Label("SDayOfWeek", "Выбор дня недели", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
+                @Html.DropDownList("SDayOfWeek", dayofweeks, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0 mb-0" })
+            </div>
+
+            <div class="col-lg-3 col-md-12 col-sm-12 text-center my-auto pr-0">
+                <input type="submit" class="btn btn-outline-success" value="Найти записи" />
             </div>
         </div>
     </div>
-    <input type="submit" value="Фильтровать снова" />
 }
 @using (Html.BeginForm(actionName: "AddGroupTraining",
                       controllerName: "GroupTraining",
                       method: FormMethod.Post,
-                      htmlAttributes: new { @class = "p-3" }))
+                      htmlAttributes: new { @class = "" }))
 {
-    <div class="container">
-        @foreach (var group in groupTrainings)
-        {
-            <div class="row">
-                @foreach (var gt in group)
-                {
-                    <div class="col-4 col-sm-3">
-                        <div class="card">
-                            <div class="card-header">
-                                @gt.Name
-                            </div>
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">Проводится: @gt.DayOfWeek, @gt.Time</h6>
-                                <p class="card-text">
-                                    Осталось мест: @gt.Capacity
-                                </p>
-
-                            </div>
-                            @if (!gt.Recorded)
-                            {
-                                <div class="card-footer">
-                                    <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="AddGT_@gt.ID" name="gtSelected" value="@gt.ID" />
-                                        @Html.Label($"AddGT_{gt.ID}", "Записаться", htmlAttributes: new { @class = "custom-control-label" })
-                                    </div>
-                                </div>
-                            }
-                            else
-                            {
-                            <div class="card-footer">
-                                Вы уже записаны
-                                @Html.ActionLink("Отменить", "Cancel", new { IDGt = gt.ID })
-                            </div>
-                            }
-                        </div>
-                    </div>
-                }
-
-
-            </div>
-        }
+<div class="card container mt-3 px-0">
+    <div class="container-fluid px-0 text-center grey lighten-4">
+        <h2 class="text-center text-default mt-2">Свободные записи</h2>
     </div>
-    <input type="submit" value="Добавить выделенные" />
+    <hr class="mt-0" />
+    @foreach (var group in groupTrainings)
+    {
+        <div class="card-body row pt-0 ">
+            @foreach (var gt in group)
+            {
+                <div class="col-4 col-sm-3">
+                    <div class="card">
+                        <div class="card-header">
+                            @gt.Name
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-primary">@gt.DayOfWeek, @gt.Time</h6>
+                            <p class="card-text text-primary">
+                                @gt.Capacity мест осталось
+                            </p>
+
+                        </div>
+                        @if (!gt.Recorded)
+                        {
+                            <div class="card-footer">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="AddGT_@gt.ID" name="gtSelected" value="@gt.ID" />
+                                    @Html.Label($"AddGT_{gt.ID}", "Записаться", htmlAttributes: new { @class = "custom-control-label text-success" })
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="card-footer">
+                                @Html.ActionLink("Отменить запись", "Cancel", new { IDGt = gt.ID }, htmlAttributes: new { @class = "text-danger" })
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+
+        </div>
+    }
+    <hr class="my-0" />
+    <div class="container-fluid px-0 text-center grey lighten-4">
+        <input type="submit" class="btn btn-success" value="Записаться на выбранные" />
+    </div>
+</div>
+    
 }

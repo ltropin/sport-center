@@ -8,35 +8,33 @@
     var timeranges = ViewData["TimeRanges"] as IEnumerable<SelectListItem>;
 }
 
-<h1>Персональные тренировки</h1>
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        @using(Html.BeginForm(actionName: "AddPersonalTraining", controllerName: "PersonalTraining"))
-        { 
-            <div class="form-group">
-                @Html.Label("DayOfWeek", "Выбор дня недели", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("DayOfWeek", dayofweeks, htmlAttributes: new { @class = "form-control" })
+    <div class="jumbotron text-center mt-3 py-2">
+        <h1 class="card-title h1 mb-3 mt-2 text-default">Запись на персональную тренировку</h1>
+        <div class="row d-flex justify-content-center">
+            <div class="col-xl-8 pb-2">
+                @using (Html.BeginForm(actionName: "AddPersonalTraining", controllerName: "PersonalTraining"))
+                {
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        @Html.Label("DayOfWeek", "День недели", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
+                        @Html.DropDownList("DayOfWeek", dayofweeks, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0" })
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        @Html.Label("IdTrainer", "Тренер", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
+                        @Html.DropDownList("IdTrainer", trainers, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0" })
+                    </div>
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        @Html.Label("Time", "Время занятия", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
+                        @Html.DropDownList("Time", timeranges, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0" })
+                    </div>
                 </div>
+                }
             </div>
-            <div class="form-group">
-                @Html.Label("IdTrainer", "Выбор тренера", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("IdTrainer", trainers, htmlAttributes: new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("Time", "Выбор времени", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("Time", timeranges, htmlAttributes: new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Записаться" class="btn btn-primary" />
-            </div>
-        }
+        </div>
+        <hr class="pb-2 my-1">
+        <div class="form-group">
+            <input type="submit" value="Записаться" class="btn btn-success" />
+        </div>
     </div>
-</div>
 
