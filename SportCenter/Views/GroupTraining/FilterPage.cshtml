@@ -7,21 +7,28 @@
 @using (Html.BeginForm(actionName: "SelectGroupTraining", controllerName: "GroupTraining"))
 {
     @Html.AntiForgeryToken()
-    <h2 class="text-center text-default mt-2">Групповые тренировки</h2>
-    <div class="card mt-2">
-        <div class="card-body row justify-content-center pb-1">
-            <div class="col-lg-4 col-md-12 col-sm-12">
-                @Html.Label("STrainer", "Выбор тренера", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
-                @Html.DropDownList("STrainer", trainers, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0" })
+    <div class="card container col-lg-6 col-md-12 col-sm-12 mt-2 px-0">
+        <div class="container-fluid px-0 text-center grey lighten-4">
+            <h2 class="text-center text-default mt-2">Групповые тренировки</h2>
+        </div>
+        <hr class="mt-0" />
+        <div class="card-body row py-0 justify-content-center">
+            <div class="col-xl-9">
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        @Html.Label("STrainer", "Тренер", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
+                        @Html.DropDownList("STrainer", trainers, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0" })
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        @Html.Label("SDayOfWeek", "День недели", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
+                        @Html.DropDownList("SDayOfWeek", dayofweeks, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0 mb-0" })
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12">
-                @Html.Label("SDayOfWeek", "Выбор дня недели", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
-                @Html.DropDownList("SDayOfWeek", dayofweeks, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0 mb-0" })
-            </div>
-
-            <div class="col-lg-3 col-md-12 col-sm-12 text-center my-auto pr-0">
-                <input type="submit" class="btn btn-outline-success" value="Фильтровать снова" />
-            </div>
+        </div>
+        <hr class="my-0" />
+        <div class="container-fluid px-0 text-center grey lighten-4">
+            <input type="submit" class="btn btn-success" value="Найти тренировки" />
         </div>
     </div>
 }
