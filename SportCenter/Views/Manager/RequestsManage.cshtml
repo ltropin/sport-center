@@ -5,41 +5,51 @@
     var requests = ViewData["RequestAbonements"] as IEnumerable<RequestAbonement>;
 }
 
-    <h1>Управление абонементами</h1>
+<div class="card container col-lg-8 col-md-12 col-sm-12 mt-2 px-0">
+    <div class="container-fluid px-0 text-center grey lighten-4">
+        <h2 class="text-center text-default mt-2">Управление заявками на абонемент</h2>
+    </div>
+    <hr class="my-0" />
+    <div class="card-body p-0">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        ФИО Клиента
+                    </th>
+                    <th>
+                        Срок
+                    </th>
+                    <th>
+                        Время
+                    </th>
+                    <th class="text-center"><i class="fas fa-thumbs-up green-text fa-2x"></i></th>
+                    <th class="text-center"><i class="fas fa-thumbs-down red-text fa-2x"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in requests)
+                {
+                    <tr>
+                        <td class="pb-0">
+                            @item.IdClientNavigation.Fio
+                        </td>
+                        <td class="pb-0">
+                            @item.Term месяца
+                        </td>
+                        <td class="pb-0">
+                            @item.Time.ToString(@"hh\:mm")
+                        </td>
+                        <td class="text-center">
+                            <a class="btn btn-outline-success btn-sm" asp-action="AcceptAbonement" asp-route-id="@item.Id">Одобрить</a>
+                        </td>
+                        <td class="text-center">
+                        <a class="btn btn-outline-danger btn-sm" asp-action="DeclineAbonement" asp-route-id="@item.Id">Отклонить</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                ФИО Клиента
-            </th>
-            <th>
-                Срок
-            </th>
-            <th>
-                Время
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in requests)
-    {
-        <tr>
-            <td>
-                @item.IdClientNavigation.Fio
-            </td>
-            <td>
-                @item.Term месяца
-            </td>
-            <td>
-                @item.Time.ToString(@"hh\:mm")
-            </td>
-            <td>
-                <a class="btn btn-primary" asp-action="AcceptAbonement" asp-route-id="@item.Id">Одобрить</a> 
-                @*<a class="btn btn-danger" asp-action="DeclineAbonement" asp-route-id="@item.Id">Отклонить</a>*@
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>

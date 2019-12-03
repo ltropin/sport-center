@@ -55,6 +55,7 @@
 
 })(jQuery);
 $(document).ready(function () {
+    $('.datepicker').pickadate();
     $('.mdb-select').materialSelect();
     $('#password').togglePassword();
     $('#password2').togglePassword();

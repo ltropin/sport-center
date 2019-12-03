@@ -4,66 +4,65 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var abonement = ViewData["Abonement"] as Abonement;
 }
-
-<h1>Абонемент</h1>
 @if (abonement is null)
 {
-    <div>У вас нет абонемента!</div>
+    <div class="card container col-lg-6 col-md-12 col-sm-12 mt-2 px-0">
+        <div class="container-fluid px-0 text-center grey lighten-4">
+            <h2 class="text-center text-default mt-2">Мои абонементы</h2>
+        </div>
+        <hr class="mt-0" />
+        <div class="card-body row py-0 justify-content-center">
+            <div class="col-xl-9">
+                <h2 class="text-center text-info">Активных заявок нет</h2>
+            </div>
+        </div>
+    </div>
 }
 else
-{ 
-<div>
-    <dl class="row">
-        <dt class = "col-sm-2">
-            Номер абонемента
-        </dt>
-        <dd class = "col-sm-10">
-            @abonement.Number
-        </dd>
-        <dt class="col-sm-2">
-            Дата блокировки
-        </dt>
-        <dd class="col-sm-10">
-            @if (abonement.DateBlock.HasValue)
-            {
-            <div>@abonement.DateBlock.Value.ToShortTimeString()</div>
-            }
-            else
-            {
-                <a class="btn btn-info" asp-action="FreezeAbonement" asp-route-id="@abonement.Number">Заморозить</a>
-            }
-        </dd>
-        @if (abonement.IntervalBlock.HasValue)
-        {
-            <dt class = "col-sm-2">
-                Время блокировки (в днях)
-            </dt>
+{
+    <div class="card container col-lg-6 col-md-12 col-sm-12 mt-2 px-0">
+        <div class="container-fluid px-0 text-center grey lighten-4">
+            <h2 class="text-center text-default mt-2">Мои абонементы</h2>
+        </div>
+        <hr class="mt-0" />
+        <div class="card-body row py-0 justify-content-center">
 
-            <dd class = "col-sm-10">
-                @abonement.IntervalBlock.Value
-            </dd>
-        }
-        <dt class = "col-sm-2">
-            Осталось дней блокировки
-        </dt>
-        <dd class = "col-sm-10">
-            @abonement.Capacity
-        </dd>
-        <dt class = "col-sm-2">
-            Время абонемента
-        </dt>
-        <dd class = "col-sm-10">
-            @abonement.Time.ToString(@"hh\:mm")
-        </dd>
-        <dt class = "col-sm-2">
-            Срок абонемента (в днях)
-        </dt>
-        <dd class = "col-sm-10">
-            @abonement.Term
-        </dd>
-    </dl>
-</div>
+                <div class="row col-12 pb-3">
+                    <div class="row col-lg-7 text-muted pr-0 align-right align-middle"><i class="fas fa-list-ol fa-2x mr-2"></i> <p class="h5 mb-0">Номер абонемента</p> </div>
+                    <div class="col col-lg-5 col-sm-3 text-primary float-left pl-0"><p class="h5">@abonement.Number</p></div>
+                </div>
+                <div class="row col-12 pb-3">
+                    <div class="row col col-lg-6 text-muted pr-0 align-middle"><i class="fas fa-snowflake fa-2x mr-2"></i> <p class="h5">Блокировка</p> </div>
+                    <div class="col col-lg-6 float-left">
+                        @if (abonement.DateBlock.HasValue)
+                        {
+                            <div class="text-primary"><p class="h5">C @abonement.DateBlock.Value.Date.ToShortDateString()</p></div>
+                        }
+                        else
+                        {
+                            <a class="btn btn-info btn-sm py-1 my-0" asp-action="FreezeAbonement" asp-route-id="@abonement.Number">Заморозить</a>
+                        }
+                    </div>
+                </div>
+                @if(abonement.IntervalBlock.HasValue)
+                {
+                <div class="row col-12 pb-3">
+                    <div class="row col col-lg-9 text-muted pr-0 align-middle"><i class="fas fa-snowflake fa-2x mr-2"></i> <p class="h5">Время блокировки (в днях)</p></div>
+                    <div class="col col-lg-2 text-primary"><p class="h5">@abonement.IntervalBlock.Value</p></div>
+                </div>
+                }
+                <div class="row col-12 pb-3">
+                    <div class="row col col-lg-9 text-muted pr-0 align-middle"><i class="fas fa-calendar-alt fa-2x mr-2"></i> <p class="h5">Осталось дней для заморозки</p> </div>
+                    <div class="col col-lg-2 text-primary"> <p class="h5">@abonement.Capacity</p> </div>
+                </div>
+                <div class="row col-12 pb-3">
+                    <div class="row col col-lg-9 text-muted pr-0 align-middle"><i class="fas fa-clock fa-2x mr-2"></i> <p class="h5">Время свободного посещения</p> </div>
+                    <div class="col col-lg-3 text-primary"><p class="h5">@abonement.Time.ToString(@"hh\:mm")</p></div>
+                </div>
+                <div class="row col-12 pb-3">
+                    <div class="row col col-lg-10 text-muted pr-0 align-middle"><i class="fas fa-battery-half fa-2x mr-2"></i> <p class="h5">Длительность действия абонемента <br/>(в месяцах)</p></div>
+                    <div class="col col-lg-2 text-primary"><p class="h5">@abonement.Term</p></div>
+                </div>
+        </div>
+    </div>
 }
-@*<div>
-    <a asp-action="FreezeAbonement" asp-route-id="@abonement.Number">Edit</a> |
-</div>*@

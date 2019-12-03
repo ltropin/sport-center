@@ -43,16 +43,28 @@ namespace SportCenter.Controllers
         public IActionResult AcceptAbonement(int Id)
         {
             var requestAbonement = context.RequestAbonement.Single(x => x.Id == Id);
-            var currentClient = context.Client.Single(x => x.Email == User.Identity.Name);
 
             context.Abonement.Add(new Abonement
             {
-                IdClient = currentClient.Id,
+                IdClient = requestAbonement.IdClient,
                 Capacity = 30,
                 Term = requestAbonement.Term,
                 Time = requestAbonement.Time,
                 IsActive = true
             });
+            context.RequestAbonement.Remove(requestAbonement);
+
+            context.SaveChanges();
+
+            return RedirectToAction(nameof(RequestsManage));
+        }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult DeclineAbonement(int Id)
+        {
+            var requestAbonement = context.RequestAbonement.Single(x => x.Id == Id);
+
             context.RequestAbonement.Remove(requestAbonement);
 
             context.SaveChanges();

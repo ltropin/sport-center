@@ -8,55 +8,65 @@
     var myRequests = ViewData["MyRequests"] as IEnumerable<RequestAbonement>;
 }
 
-<h1>Мои заявки</h1>
-@if (myRequests.Count() > 0)
-{
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Time</th>
-            <th>Term (месяцы)</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var request in myRequests)
-        {
-            <tr>
-                <th>@request.Time.ToString(@"hh\:mm")</th>
-                <th>@request.Term</th>
-    
-    @*            <td><a asp-action="DeleteGroup" asp-route-id="@group.ID">Отписаться</a></td>*@
-            </tr>
-        }
+    <div class="card container col-lg-7 col-md-12 col-sm-12 mt-2 px-0">
+        <div class="container-fluid px-0 text-center grey lighten-4">
+            <h2 class="text-center text-default mt-2">Мои заявки</h2>
+        </div>
+        <hr class="mt-0" />
+        <div class="card-body p-0">
+            @if (myRequests.Count() > 0)
+            {
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Время посещения</th>
+                            <th>Срок (в месяцах)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var request in myRequests)
+                        {
+                            <tr class="align-middle">
+                                <th><span class="align-middle">@request.Time.ToString(@"hh\:mm")</span></th>
+                                <th><span class="align-middle">@request.Term</span></th>
+                                <th><a class="btn btn-outline-danger btn-sm py-1" asp-action="DeclineRequestAbonement" asp-route-id="@request.Id">Убрать</a></th>
+                            </tr>
+                        }
 
-    </tbody>
-</table>
-}
-else
-{
-    <b>Нет заявок</b>
-}
+                    </tbody>
+                </table>
+            }
+            else
+            {
+        <h2 class="text-center text-info">Активных заявок нет</h2>
+            }
+        </div>
+    </div>
 
-<h1>Создание заявки на абонемент</h1>
-
-<div class="row">
-    <div class="col-md-4">
+    <div class="card container col-lg-7 col-md-12 col-sm-12 mt-2 px-0">
         <form asp-action="RequestAbonement">
-            <div class="form-group">
-                @Html.Label("Term", "Выбор срока", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("Term", termList, htmlAttributes: new { @class = "form-control" })
+            <div class="container-fluid px-0 text-center grey lighten-4">
+                <h2 class="text-center text-default py-2 my-0">Оставить заявку на абонемент</h2>
+            </div>
+            <hr class="mt-0" />
+            <div class="card-body row py-0 justify-content-center">
+                <div class="col-xl-11">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            @Html.Label("Term", "Срок посещения (в месяцах)", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
+                            @Html.DropDownList("Term", termList, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0" })
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            @Html.Label("Time", "Время для свободного посещения", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
+                            @Html.DropDownList("Time", timeList, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0" })
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                @Html.Label("Time", "Выбор времени", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.DropDownList("Time", timeList, htmlAttributes: new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Создать" class="btn btn-primary" />
+            <hr class="my-0" />
+            <div class="container-fluid px-0 text-center grey lighten-4">
+                <input type="submit" class="btn btn-success" value="Отправить заявку" />
             </div>
         </form>
     </div>
-</div>
+
