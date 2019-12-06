@@ -44,7 +44,16 @@ namespace SportCenter.Controllers
         [HttpPost]
         public IActionResult AddPersonalTraining(PersonalTrain personalTrain)
         {
+
             personalTrain.IdClient = context.Client.Single(x => x.Email == User.Identity.Name).Id;
+            
+            if (context.PersonalTrain.Any(x => x.IdTrainer == personalTrain.IdTrainer &&
+                                               x.Time == personalTrain.Time &&
+                                               x.DayOfWeek == personalTrain.DayOfWeek))
+            {
+                throw new Exception("Чел лучше перезапишись");
+            }
+
             context.PersonalTrain.Add(personalTrain);
             context.SaveChanges();
 
