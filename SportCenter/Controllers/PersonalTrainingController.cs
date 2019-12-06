@@ -25,6 +25,7 @@ namespace SportCenter.Controllers
                 Text = x.Fio,
                 Value = x.Id.ToString()
             }).ToList();
+
         }
 
         public PersonalTrainingController(SportCenterContext context)
