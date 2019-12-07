@@ -2,7 +2,56 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Jumbotron -->
+<div class="card card-image mt-4" style="background-image: url(https://geo-sport.ru/media/gallery_photo/16-trenazhernyy-zal.jpg);">
+    <div class="text-white text-center rgba-stylish-strong py-2 px-4">
+        <div class="py-5">
+            <h2 class="card-title h2 my-4 py-2">Фитнес-клуб — спортивный центр</h2>
+            <p class="mb-4 pb-2 px-md-5 mx-md-5">
+                Добро пожаловать в фитнес-клуб. Клуб для тех, кто понимает, что здоровье и сила и красота помогут
+                достичь жизненных успехов, оставаться в гармонии со своим телом и чувствами и, конечно же, для тех, кто меняя себя, готов изменить мир!
+            </p>
+            <p class="mb-4 pb-2 px-md-5 mx-md-5">
+                У нас есть всё необходимое для достижения максимальных результатов, в кратчайшие сроки. Мы будем рады видеть вас в числе наших друзей. Начните менять жизнь к лучшему прямо сейчас!
+            </p>
+            <a class="btn btn-lg peach-gradient" asp-area="" asp-controller="Account" asp-action="Register"><i class="fas fa-user-plus"></i> Регистрация</a>
+        </div>
+    </div>
 </div>
+<!-- Jumbotron -->
+<div class="container mt-3 pt-2 pb-3 px-5 z-depth-1">
+
+    <!--Section: Content-->
+    <section class="text-center dark-grey-text">
+        <h2 class="card-title h2 my-4 py-2">Почему стоит выбрать нас?</h2>
+        <div class="row text-center d-flex justify-content-center mt-5 mb-2">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <i class="fas fa-map-marked-alt fa-3x mb-4 grey-text"></i>
+                <h5 class="font-weight-normal mb-3">
+                    Удобное расположение в центре города
+                </h5>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <i class="fas fa-running fa-3x mb-4 grey-text"></i>
+                <h5 class="font-weight-normal mb-3">
+                    Современные тренажеры
+                </h5>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <i class="fas fa-people-carry fa-3x mb-4 grey-text"></i>
+                <h5 class="font-weight-normal mb-3">Персональные тренировки с личными тренерами</h5>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-4">
+                <i class="fas fa-users fa-3x mb-4 grey-text"></i>
+                <h5 class="font-weight-normal mb-3">
+                    Групповые занятия по разным направлениям
+                </h5>
+                <a asp-area="" asp-controller="Home" asp-action="GroupTrainingText"><p class="text-primary mb-0 h5">Виды тренировок</p></a>
+            </div>
+        </div>
+
+    </section>
+    <!--Section: Content-->
+
+
+</div>      
