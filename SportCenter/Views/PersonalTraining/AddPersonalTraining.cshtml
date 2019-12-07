@@ -8,7 +8,8 @@
     var timeranges = ViewData["TimeRanges"] as IEnumerable<SelectListItem>;
 }
 
-
+@using (Html.BeginForm(actionName: "AddPersonalTraining", controllerName: "PersonalTraining"))
+{
     <div class="card container col-8 mt-2 px-0">
         <div class="container-fluid px-0 text-center grey lighten-4">
             <h2 class="text-center text-default mt-2">Запись на персональную тренировку</h2>
@@ -16,8 +17,7 @@
         <hr class="mt-0" />
         <div class="card-body row pt-0 justify-content-center">
             <div class="col-xl-12 pb-2">
-                @using (Html.BeginForm(actionName: "AddPersonalTraining", controllerName: "PersonalTraining"))
-                {
+                
                     <div class="row">
                         <div class="col-lg-4 col-md-12 col-sm-12">
                             @Html.Label("DayOfWeek", "День недели", htmlAttributes: new { @class = "mdb-main-label mb-0 text-default" })
@@ -32,7 +32,7 @@
                             @Html.DropDownList("Time", timeranges, htmlAttributes: new { @class = "mdb-select md-form colorful-select dropdown-default mt-0" })
                         </div>
                     </div>
-                }
+                
             </div>
         </div>
         <hr class="my-0" />
@@ -40,4 +40,4 @@
             <input type="submit" class="btn btn-success" value="Записаться" />
         </div>
     </div>
-
+}

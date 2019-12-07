@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SportCenter.Data;
 using SportCenter.Models;
+using SportCenter.Repositories.Interfaces;
 using SportCenter.ViewModels;
 using static SportCenter.Extensions.Extensions;
 
@@ -19,11 +20,10 @@ namespace SportCenter.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly SportCenterContext context;
-
-        public AccountController(SportCenterContext context)
+        private readonly IAccountRepository accountRepo;
+        public AccountController(IAccountRepository accountRepo)
         {
-            this.context = context;
+            this.accountRepo = accountRepo;
         }
 
         [HttpGet]
@@ -39,7 +39,7 @@ namespace SportCenter.Controllers
             if (ModelState.IsValid)
             {
                 var hashPass = Client.HashPass(model.Password);
-                var user = context.Client.SingleOrDefault(u => u.Email == model.Email && u.Password == hashPass);
+                var user = accountRepo.GetClient(model.Email, hashPass);
                 if (user != null)
                 {
                     Authenticate(model.Email); // аутентификация
@@ -58,23 +58,25 @@ namespace SportCenter.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterModel model)
+        public IActionResult Register(RegisterModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = context.Client.FirstOrDefault(u => u.Email == model.Email);
+                var user = accountRepo.FindOne(x => x.Email == model.Email);
                 if (user == null)
                 {
                     // добавляем пользователя в бд
-                    var allRoles = context.Role.ToList();
-                    context.Client.Add(new Client
+                    var allRoles = accountRepo.GetRoles().ToList();
+
+                    accountRepo.Create(new Client
                     {
                         Email = model.Email,
                         Password = Client.HashPass(model.Password),
                         IdRole = FromRoleEnum(Roles.Client, allRoles).Id,
                         Fio = model.FIO
                     });
-                    context.SaveChangesAsync();
+
+                    accountRepo.Save();
 
                     Authenticate(model.Email); // аутентификация
 
@@ -106,39 +108,10 @@ namespace SportCenter.Controllers
         [HttpGet]
         public IActionResult GetTrains()
         {
-            var clientID = context.Client.Single(x => x.Email == User.Identity.Name).Id;
-            var groupTrains = context.OrderGroup
-                                        .Include(x => x.IdGroupTrainNavigation)
-                                        .ThenInclude(x => x.IdTrainerNavigation)
-                                        .Where(x => x.IdClient == clientID)
-                                        .Select(group => group.IdGroupTrainNavigation)
-                                        .ToList()
-                                        .Select(x => new GroupTrainingModel
-                                        {
-                                            ID = x.Id,
-                                            Name = x.Name,
-                                            TrainerName = x.IdTrainerNavigation.Fio,
-                                            Capacity = x.Capacity,
-                                            DayOfWeek = DayOfWeekMap[x.DayOfWeek].Long,
-                                            Recorded = true,
-                                            Time = x.Time.ToString(@"hh\:mm")
-                                        })
-                                        .ToList();
-            var personalTrains = context.PersonalTrain
-                                        .Where(x => x.IdClient == clientID)
-                                        .Include(x => x.IdTrainerNavigation)
-                                        .ToList()
-                                        .Select(x => new PersonalTrainingModel
-                                        {
-                                            ID = x.Id,
-                                            TrainerName = x.IdTrainerNavigation.Fio,
-                                            DayOfWeek = DayOfWeekMap[x.DayOfWeek].Long,
-                                            Time = x.Time.ToString(@"hh\:mm")
-                                        })
-                                        .ToList();
+            var client = accountRepo.GetCurrentClient(User.Identity.Name);
 
-            ViewData["GroupTrains"] = groupTrains;
-            ViewData["PersonalTrains"] = personalTrains;
+            ViewData["GroupTrains"] = accountRepo.GetGroupTrainings(client.Id).ToList();
+            ViewData["PersonalTrains"] = accountRepo.GetPersonalTrainings(client.Id).ToList();
 
             return View(Roles.Client);
 
@@ -147,13 +120,10 @@ namespace SportCenter.Controllers
         [HttpGet]
         public IActionResult DeleteGroup(GroupTrainingModel groupTraining)
         {
-            var clientID = context.Client.Single(x => x.Email == User.Identity.Name).Id;
-            var deleteItem = context.OrderGroup.Single(x => x.IdGroupTrain == groupTraining.ID && x.IdClient == clientID);
+            var client = accountRepo.GetCurrentClient(User.Identity.Name);
 
-            context.OrderGroup.Attach(deleteItem);
-            context.OrderGroup.Remove(deleteItem);
-
-            context.SaveChanges();
+            accountRepo.DeleteOrderGroupById(groupTraining.ID, client.Id);
+            accountRepo.Save();
 
             return RedirectToAction(nameof(GetTrains));
         }
@@ -162,11 +132,8 @@ namespace SportCenter.Controllers
         [HttpGet]
         public IActionResult DeletePersonal(PersonalTrainingModel personalTraining)
         {
-            var deleteItem = context.PersonalTrain.Single(x => x.Id == personalTraining.ID);
-            context.PersonalTrain.Attach(deleteItem);
-            context.PersonalTrain.Remove(deleteItem);
-
-            context.SaveChanges();
+            accountRepo.DeletePersonalTrainById(personalTraining.ID);
+            accountRepo.Save();
             return RedirectToAction(nameof(GetTrains));
         }
     }

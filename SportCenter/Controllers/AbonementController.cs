@@ -8,25 +8,27 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SportCenter.Data;
 using SportCenter.Models;
+using SportCenter.Repositories.Interfaces;
 using static SportCenter.Extensions.Extensions;
 
 namespace SportCenter.Controllers
 {
     public class AbonementController : Controller
     {
-        private readonly SportCenterContext context;
-        public AbonementController(SportCenterContext context)
+        private readonly IAbonementRepository abonementRepo;
+        public AbonementController(IAbonementRepository abonementRepo)
         {
-            this.context = context;
+            this.abonementRepo = abonementRepo;
         }
         [Authorize]
         [HttpGet]
         public IActionResult RequestAbonement()
         {
-            var currentClient = context.Client.Single(x => x.Email == User.Identity.Name);
-            ViewData["MyRequests"] = context.RequestAbonement.Where(x => x.IdClient == currentClient.Id).ToList();
-            ViewData["TermList"] = TermList.Select(x => new SelectListItem { Text = x.ToString(), Value = x.ToString() });
-            ViewData["TimeList"] = TimeList.Select(x => new SelectListItem { Text = x.ToString(@"hh\:mm"), Value = x.ToString() });
+            var client = abonementRepo.GetCurrentClient(User.Identity.Name);
+
+            ViewData["MyRequests"] = abonementRepo.GetRequestAbonements(client.Id).ToList();
+            ViewData["TermList"] = abonementRepo.SelectTerm(TermList);
+            ViewData["TimeList"] = abonementRepo.SelectTime(TimeList);
 
             return View(Roles.Client);
         }
@@ -35,10 +37,10 @@ namespace SportCenter.Controllers
         [HttpPost]
         public IActionResult RequestAbonement(RequestAbonement requestAbonement)
         {
-            var currentClient = context.Client.Single(x => x.Email == User.Identity.Name);
-            requestAbonement.IdClient = currentClient.Id;
-            context.RequestAbonement.Add(requestAbonement);
-            context.SaveChanges();
+            var client = abonementRepo.GetCurrentClient(User.Identity.Name);
+            abonementRepo.AddRequestAbonement(requestAbonement, client.Id);
+
+            abonementRepo.Save();
 
             return RedirectToAction(nameof(RequestAbonement));
         }
@@ -47,11 +49,9 @@ namespace SportCenter.Controllers
         [HttpGet]
         public IActionResult DeclineRequestAbonement(int Id)
         {
-            var requestAbonement = context.RequestAbonement.Single(x => x.Id == Id);
+            abonementRepo.DeleteRequestAbonemetById(Id);
 
-            context.RequestAbonement.Remove(requestAbonement);
-
-            context.SaveChanges();
+            abonementRepo.Save();
 
             return RedirectToAction(nameof(RequestAbonement));
         }
@@ -60,8 +60,8 @@ namespace SportCenter.Controllers
         [HttpGet]
         public IActionResult AbonementInfo()
         {
-            var currentClient = context.Client.Single(x => x.Email == User.Identity.Name);
-            ViewData["Abonement"] = context.Abonement.SingleOrDefault(x => x.IdClient == currentClient.Id);
+            var client = abonementRepo.GetCurrentClient(User.Identity.Name);
+            ViewData["Abonement"] = abonementRepo.GetByClientId(client.Id);
 
             return View(Roles.Client);
         }
@@ -70,8 +70,7 @@ namespace SportCenter.Controllers
         [HttpGet]
         public IActionResult FreezeAbonement(long Id)
         {
-            var currentClient = context.Client.Single(x => x.Email == User.Identity.Name);
-            ViewData["Abonement"] = context.Abonement.Single(x => x.Number == Id);
+            ViewData["Abonement"] = abonementRepo.GetById(Id);
 
             return View(Roles.Client);
         }
@@ -79,15 +78,12 @@ namespace SportCenter.Controllers
         [HttpPost]
         public IActionResult FreezeAbonement(Abonement abonement)
         {
-            var currentClient = context.Client.Single(x => x.Email == User.Identity.Name);
-            var newAbonement = context.Abonement.Single(x => x.Number == abonement.Number);
+            var client = abonementRepo.GetCurrentClient(User.Identity.Name);
+            var newAbonement = abonementRepo.GetById(abonement.Number);
 
-            newAbonement.Capacity -= abonement.IntervalBlock.Value;
-            newAbonement.DateBlock = abonement.DateBlock.Value;
-            newAbonement.IntervalBlock = abonement.IntervalBlock.Value;
-            newAbonement.IsActive = false;
+            abonementRepo.FreezeAbonement(newAbonement, abonement);
 
-            context.SaveChanges();
+            abonementRepo.Save();
 
             return RedirectToAction(nameof(AbonementInfo));
         }

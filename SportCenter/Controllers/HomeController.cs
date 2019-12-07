@@ -20,6 +20,7 @@ namespace SportCenter.Controllers
         public HomeController(SportCenterContext context)
         {
             this.context = context;
+            // Init base data, for testing
             if (context.Client.Count() == 0 || context.GroupTrain.Count() == 0)
                 StartData.SetupData(ref context);
         }
@@ -35,8 +36,6 @@ namespace SportCenter.Controllers
             }
             return View();
         }
-
-
 
         public IActionResult NoAccess()
         {

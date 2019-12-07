@@ -7,34 +7,29 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SportCenter.Data;
 using SportCenter.Models;
+using SportCenter.Repositories.Interfaces;
 using static SportCenter.Extensions.Extensions;
 
 namespace SportCenter.Controllers
 {
     public class ManagerController : Controller
     {
-        private readonly SportCenterContext context;
-
-        public ManagerController(SportCenterContext context)
+        private readonly IManagerRepository managerRepo;
+        public ManagerController(IManagerRepository managerRepo)
         {
-            this.context = context;
+            this.managerRepo = managerRepo;
         }
         [Authorize]
         public IActionResult RequestsManage()
         {
-            var currentClient = context.Client.Include(x => x.IdRoleNavigation)
-                                              .Single(x => x.Email == User.Identity.Name);
+            var client = managerRepo.GetCurrentClient(User.Identity.Name, withRole: true);
 
-            if (FromRoleElement(currentClient.IdRoleNavigation) != Roles.Manager)
+            if (FromRoleElement(client.IdRoleNavigation) != Roles.Manager)
                 return RedirectToAction("NoAccess", "Home");
 
-            var clientRoleId = FromRoleEnum(Roles.Client, context.Role.ToList()).Id;
-            var requests = context.RequestAbonement
-                                 .Include(x => x.IdClientNavigation)
-                                 .Where(x => x.IdClientNavigation.IdRole == clientRoleId)
-                                 .ToList();
+            var clientRoleId = FromRoleEnum(Roles.Client, managerRepo.GetRoles().ToList()).Id;
 
-            ViewData["RequestAbonements"] = requests;
+            ViewData["RequestAbonements"] = managerRepo.GetRequestAbonements(clientRoleId);
 
             return View(Roles.Manager);
         }
@@ -42,19 +37,11 @@ namespace SportCenter.Controllers
         [HttpGet]
         public IActionResult AcceptAbonement(int Id)
         {
-            var requestAbonement = context.RequestAbonement.Single(x => x.Id == Id);
+            var requestAbonement = managerRepo.GetById(Id);
 
-            context.Abonement.Add(new Abonement
-            {
-                IdClient = requestAbonement.IdClient,
-                Capacity = 30,
-                Term = requestAbonement.Term,
-                Time = requestAbonement.Time,
-                IsActive = true
-            });
-            context.RequestAbonement.Remove(requestAbonement);
+            managerRepo.AddAbonement(requestAbonement);
 
-            context.SaveChanges();
+            managerRepo.Save();
 
             return RedirectToAction(nameof(RequestsManage));
         }
@@ -63,11 +50,11 @@ namespace SportCenter.Controllers
         [HttpGet]
         public IActionResult DeclineAbonement(int Id)
         {
-            var requestAbonement = context.RequestAbonement.Single(x => x.Id == Id);
+            var requestAbonement = managerRepo.GetById(Id);
 
-            context.RequestAbonement.Remove(requestAbonement);
+            managerRepo.Delete(requestAbonement);
 
-            context.SaveChanges();
+            managerRepo.Save();
 
             return RedirectToAction(nameof(RequestsManage));
         }

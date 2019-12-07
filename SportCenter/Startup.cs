@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SportCenter.AppStart;
 using SportCenter.Data;
+using SportCenter.Repositories;
+using SportCenter.Repositories.Interfaces;
 
 namespace SportCenter
 {
@@ -34,6 +36,12 @@ namespace SportCenter
                 {
                     options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
+
+            services.AddTransient<IGroupTrainingRepository, GroupTrainingRepository>();
+            services.AddTransient<IPersonalTrainingRepository, PersonalTrainingRepository>();
+            services.AddTransient<IAbonementRepository, AbonementRepository>();
+            services.AddTransient<IAccountRepository, AccountRepository>();
+            services.AddTransient<IManagerRepository, ManagerRepository>();
 
             services.AddMvc();
             services.AddControllersWithViews();
