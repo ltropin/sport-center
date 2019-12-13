@@ -37,14 +37,11 @@ namespace SportCenter.Controllers
             return View();
         }
 
-<<<<<<< HEAD
-=======
         public IActionResult GroupTrainingText()
         {
             return View();
         }
 
->>>>>>> 175042a9cbbf8e3ce1d4034954a4438f46cc4c88
         public IActionResult NoAccess()
         {
             return View();
